@@ -68,7 +68,8 @@ public class EmployeeService {
 
     // 従業員更新
     @Transactional
-    public ErrorKinds update(Employee employee, String code) {
+    public ErrorKinds update(String code, Employee employee) {
+
         if("".equals(employee.getPassword())) {
             employee.setPassword(code);
         }
