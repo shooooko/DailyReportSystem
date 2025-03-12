@@ -73,6 +73,7 @@ public class EmployeeService {
         if("".equals(employee.getPassword())) {
             employee.setPassword(code);
         }
+
         //パスワードチェック
         ErrorKinds result = employeePasswordCheck(employee);
         if(ErrorKinds.CHECK_OK != result) {
@@ -80,7 +81,6 @@ public class EmployeeService {
         }
 
         employee.setDeleteFlg(false);
-
         LocalDateTime now = LocalDateTime.now();
         employee.setUpdatedAt(now);
 
