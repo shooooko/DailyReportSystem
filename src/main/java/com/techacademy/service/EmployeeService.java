@@ -74,12 +74,12 @@ public class EmployeeService {
 
         if("".equals(employee.getPassword())) {
             employee.setPassword(beforEmployee.getPassword());
-        }
-
+        }else {
         //パスワードチェック
         ErrorKinds result = employeePasswordCheck(employee);
         if(ErrorKinds.CHECK_OK != result) {
             return result;
+        }
         }
 
         employee.setDeleteFlg(false);
