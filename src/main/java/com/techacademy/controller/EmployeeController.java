@@ -117,7 +117,10 @@ public class EmployeeController {
     @GetMapping(value = "/{code}/update")
     public String edit(@PathVariable("code") String code, @ModelAttribute Employee employee, Model model) {
 
-        model.addAttribute("employee", employeeService.findByCode(code));
+        if(code != null) {
+            employee = employeeService.findByCode(code);
+        }
+        model.addAttribute("employee", employee);
 
         return "employees/update";
     }
@@ -128,6 +131,7 @@ public class EmployeeController {
 
         // 入力チェック
         if (res.hasErrors()) {
+            code = null;
             return edit(code, employee, model);
         }
 
