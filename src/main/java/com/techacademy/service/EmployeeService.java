@@ -70,8 +70,10 @@ public class EmployeeService {
     @Transactional
     public ErrorKinds update(String code, Employee employee) {
 
+        Employee beforEmployee = findByCode(code);
+
         if("".equals(employee.getPassword())) {
-            employee.setPassword(code);
+            employee.setPassword(beforEmployee.getPassword());
         }
 
         //パスワードチェック
@@ -83,6 +85,7 @@ public class EmployeeService {
         employee.setDeleteFlg(false);
         LocalDateTime now = LocalDateTime.now();
         employee.setUpdatedAt(now);
+        employee.setCreatedAt(beforEmployee.getCreatedAt());
 
         employeeRepository.save(employee);
         return ErrorKinds.SUCCESS;
