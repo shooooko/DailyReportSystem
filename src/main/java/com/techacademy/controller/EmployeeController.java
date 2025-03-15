@@ -131,8 +131,14 @@ public class EmployeeController {
             return edit(code, employee, model);
         }
 
-        employeeService.update(code, employee);
+            ErrorKinds result = employeeService.update(code, employee);
+
+            if (ErrorMessage.contains(result)) {
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return edit(code, employee, model);
+            }
 
         return "redirect:/employees";
-        }
+    }
+
     }
