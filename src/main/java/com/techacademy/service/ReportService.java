@@ -23,8 +23,9 @@ public class ReportService {
 
     // 日報保存
     @Transactional
-    public ErrorKinds save(Report report) {
+    public ErrorKinds save(Report report, UserDetail userDetail) {
 
+        report.setEmployee(userDetail.getEmployee());
         report.setDeleteFlg(false);
 
         LocalDateTime now = LocalDateTime.now();

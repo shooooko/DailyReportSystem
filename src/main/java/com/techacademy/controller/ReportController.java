@@ -1,6 +1,7 @@
 package com.techacademy.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import com.techacademy.constants.ErrorMessage;
 
 import com.techacademy.entity.Report;
 import com.techacademy.service.ReportService;
+import com.techacademy.service.UserDetail;
 
 @Controller
 @RequestMapping("reports")
@@ -34,7 +36,6 @@ public class ReportController {
 
         model.addAttribute("listSize", reportService.findAll().size());
         model.addAttribute("reportList", reportService.findAll());
-
         return "reports/list";
     }
 
@@ -48,21 +49,27 @@ public class ReportController {
 
     // 日報新規登録画面
     @GetMapping(value = "/add")
-    public String create(@ModelAttribute Report report) {
+    public String create(@ModelAttribute Report report, @AuthenticationPrincipal UserDetail userDetail, Model model) {
 
+        model.addAttribute("employee", userDetail.getEmployee());
         return "reports/new";
     }
 
     // 日報新規登録処理
     @PostMapping(value = "/add")
-    public String add(@Validated Report report, BindingResult res, Model model) {
+    public String add(@Validated Report report, BindingResult res, @AuthenticationPrincipal UserDetail userDetail, Model model) {
 
         // 入力チェック
         if (res.hasErrors()) {
-            return create(report);
+            return create(report, userDetail, model);
         }
 
-        reportService.save(report);
+        ErrorKinds result = reportService.save(report, userDetail);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return create(report, userDetail, model);
+        }
 
         return "redirect:/reports";
     }
