@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.techacademy.constants.ErrorKinds;
+import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.ReportRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 public class ReportService {
@@ -23,7 +26,15 @@ public class ReportService {
 
     // 日報保存
     @Transactional
-    public ErrorKinds save(Report report, UserDetail userDetail) {
+    public ErrorKinds save(@Validated Report report, @AuthenticationPrincipal UserDetail userDetail) {
+
+        //　ログイン中の従業員かつ入力した日付の日報データが存在する場合エラー
+        for(Report check : findAll()) {
+
+            if (userDetail.getEmployee() == check.getEmployee() && report.getReportDate() == check.getReportDate()) {
+                return ErrorKinds.DATECHECK_ERROR;
+            }
+        }
 
         report.setEmployee(userDetail.getEmployee());
         report.setDeleteFlg(false);
@@ -75,6 +86,11 @@ public class ReportService {
         // 取得できなかった場合はnullを返す
         Report report = option.orElse(null);
         return report;
+    }
+
+    //従業員ごとの日報を検索
+    public List<Report> findByEmployee(Employee employee) {
+        return reportRepository.findByEmployee(employee);
     }
 
 }

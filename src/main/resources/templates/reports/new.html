@@ -34,6 +34,7 @@
                                         <p class="mb-1"></p>
                                         <div class="col-md-7">
                                          <input class="form-control" type="hidden" th:field="*{employee.name}" th:text="${employee.name}">
+                                         <span th:errors="*{employee.name}" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="mb-3">
