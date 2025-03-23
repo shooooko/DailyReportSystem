@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
-
 import com.techacademy.entity.Report;
 import com.techacademy.service.ReportService;
 import com.techacademy.service.UserDetail;
@@ -33,7 +32,6 @@ public class ReportController {
     // 日報一覧画面
     @GetMapping
     public String list(Model model) {
-
         model.addAttribute("listSize", reportService.findAll().size());
         model.addAttribute("reportList", reportService.findAll());
         return "reports/list";
@@ -42,15 +40,14 @@ public class ReportController {
     // 日報詳細画面
     @GetMapping(value = "/{id}/")
     public String detail(@PathVariable("id") Integer id, Model model) {
-
         model.addAttribute("report", reportService.findById(id));
+        model.addAttribute("employee", reportService.findById(id).getEmployee());
         return "reports/detail";
     }
 
     // 日報新規登録画面
     @GetMapping(value = "/add")
     public String create(@ModelAttribute Report report, @AuthenticationPrincipal UserDetail userDetail, Model model) {
-
         model.addAttribute("employee", userDetail.getEmployee());
         return "reports/new";
     }
@@ -91,7 +88,7 @@ public class ReportController {
             report = reportService.findById(id);
         }
         model.addAttribute("report", report);
-
+        model.addAttribute("employee", reportService.findById(id).getEmployee());
         return "reports/update";
     }
 
