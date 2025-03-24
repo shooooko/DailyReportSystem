@@ -29,7 +29,7 @@ public class ReportService {
     public ErrorKinds save(@Validated Report report, @AuthenticationPrincipal UserDetail userDetail) {
 
         //　ログイン中の従業員かつ入力した日付の日報データが存在する場合エラー
-        for(Report check : findAll()) {
+        for(Report check : reportRepository.findAll()) {
 
             if (userDetail.getEmployee() == check.getEmployee() && report.getReportDate() == check.getReportDate()) {
                 return ErrorKinds.DATECHECK_ERROR;
@@ -61,10 +61,10 @@ public class ReportService {
 
     // 日報更新
     @Transactional
-    public ErrorKinds update(Integer id, Report report) {
+    public ErrorKinds update(Integer id, Report report, @AuthenticationPrincipal UserDetail userDetail) {
 
         Report beforReport = findById(id);
-
+        report.setEmployee(userDetail.getEmployee());
         report.setDeleteFlg(false);
         LocalDateTime now = LocalDateTime.now();
         report.setUpdatedAt(now);

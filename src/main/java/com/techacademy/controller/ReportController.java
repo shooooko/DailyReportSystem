@@ -89,27 +89,26 @@ public class ReportController {
 
     //日報更新画面
     @GetMapping(value = "/{id}/update")
-    public String edit(@PathVariable("id") Integer id, @ModelAttribute Report report, Model model) {
+    public String edit(@PathVariable(name = "id", required = false) Integer id, @ModelAttribute Report report, Model model) {
 
-        if(id != null) {
+        if(id != 0) {
             report = reportService.findById(id);
         }
-        model.addAttribute("report", report);
-        model.addAttribute("employee", reportService.findById(id).getEmployee());
+            model.addAttribute("report", report);
         return "reports/update";
     }
 
     // 日報更新処理
     @PostMapping(value = "/{id}/update")
-    public String update(@Validated Report report, BindingResult res, Model model, @PathVariable("id") Integer id) {
+    public String update(@Validated Report report, BindingResult res, Model model, @PathVariable("id") Integer id, @AuthenticationPrincipal UserDetail userDetail) {
 
         // 入力チェック
         if (res.hasErrors()) {
-            id = null;
+            id = 0;
             return edit(id, report, model);
         }
 
-            ErrorKinds result = reportService.update(id, report);
+            ErrorKinds result = reportService.update(id, report, userDetail);
 
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
