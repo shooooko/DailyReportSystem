@@ -13,7 +13,6 @@ import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.ReportRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 public class ReportService {
@@ -26,12 +25,12 @@ public class ReportService {
 
     // 日報保存
     @Transactional
-    public ErrorKinds save(@Validated Report report, @AuthenticationPrincipal UserDetail userDetail) {
+    public ErrorKinds save(Report report, @AuthenticationPrincipal UserDetail userDetail) {
 
         //　ログイン中の従業員かつ入力した日付の日報データが存在する場合エラー
-        for(Report check : reportRepository.findAll()) {
+        for(Report check : findAll()) {
 
-            if (userDetail.getEmployee() == check.getEmployee() && report.getReportDate() == check.getReportDate()) {
+            if (userDetail.getEmployee().getCode().equals(check.getEmployee().getCode()) && report.getReportDate().equals(check.getReportDate()) ) {
                 return ErrorKinds.DATECHECK_ERROR;
             }
         }
@@ -63,7 +62,17 @@ public class ReportService {
     @Transactional
     public ErrorKinds update(Integer id, Report report, @AuthenticationPrincipal UserDetail userDetail) {
 
+        //　画面で表示中の従業員かつ入力した日付の日報データが存在する場合エラー
+        
         Report beforReport = findById(id);
+        
+        for(Report check : findAll()) {
+            
+            if (beforReport.getEmployee().getCode().equals(check.getEmployee().getCode()) && report.getReportDate().equals(check.getReportDate()) ) {
+                return ErrorKinds.DATECHECK_ERROR;
+            }
+        }
+
         report.setEmployee(userDetail.getEmployee());
         report.setDeleteFlg(false);
         LocalDateTime now = LocalDateTime.now();

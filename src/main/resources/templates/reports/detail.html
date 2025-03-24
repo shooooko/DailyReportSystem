@@ -21,7 +21,7 @@
                         <div class="card-body mb-5">
 
                             <div class="wizard wizard-success mb-4">
-
+                               <pre>
                                 <table class="table table-striped">
                                     <tr>
                                         <th>日付</th>
@@ -37,7 +37,7 @@
                                     </tr>
                                     <tr>
                                         <th>内容</th>
-                                        <pre><td class="align-middle" th:text="${report.content}"></td></pre>
+                                        <td class="align-middle" th:text="${report.content}"></td>
                                     </tr>
                                     <tr>
                                         <th>登録日時</th>
@@ -48,6 +48,7 @@
                                         <td class="align-middle" th:text="${#temporals.format(report.updatedAt, 'yyyy-MM-dd hh:mm:ss')}"></td>
                                     </tr>
                                 </table>
+                                </pre>
                                 <div class="mt-5 row g-1">
                                     <div class="col-auto">
                                         <a th:href="@{/reports/{id}/update(id=${id})}" class="btn btn-primary">更新</a>
