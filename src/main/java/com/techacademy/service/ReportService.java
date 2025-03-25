@@ -63,12 +63,12 @@ public class ReportService {
     public ErrorKinds update(Integer id, Report report, @AuthenticationPrincipal UserDetail userDetail) {
 
         //　画面で表示中の従業員かつ入力した日付の日報データが存在する場合エラー
-        
+
         Report beforReport = findById(id);
-        
+
         for(Report check : findAll()) {
-            
-            if (beforReport.getEmployee().getCode().equals(check.getEmployee().getCode()) && report.getReportDate().equals(check.getReportDate()) ) {
+
+            if (!(report.getReportDate().equals(beforReport.getReportDate())) && beforReport.getEmployee().getCode().equals(check.getEmployee().getCode()) && report.getReportDate().equals(check.getReportDate()) ) {
                 return ErrorKinds.DATECHECK_ERROR;
             }
         }
